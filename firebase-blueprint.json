@@ -1,0 +1,164 @@
+{
+  "entities": {
+    "Vessel": {
+      "title": "Vessel",
+      "description": "Master data kapal dan armada pelayaran",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "maxLength": 100 },
+        "imoNumber": { "type": "string", "maxLength": 20 },
+        "type": { "type": "string", "maxLength": 50 },
+        "capacityDwt": { "type": "number" },
+        "capacityTeu": { "type": "number" },
+        "yearBuilt": { "type": "number" },
+        "flag": { "type": "string", "maxLength": 50 },
+        "status": { "type": "string", "enum": ["active", "sailing", "docking", "berthed"] },
+        "currentPort": { "type": "string", "maxLength": 100 },
+        "updatedAt": { "type": "string" },
+        "createdBy": { "type": "string" }
+      },
+      "required": ["name", "imoNumber", "type", "status"]
+    },
+    "Port": {
+      "title": "Port",
+      "description": "Master data pelabuhan dan dermaga singgah",
+      "type": "object",
+      "properties": {
+        "code": { "type": "string", "maxLength": 20 },
+        "name": { "type": "string", "maxLength": 100 },
+        "city": { "type": "string", "maxLength": 100 },
+        "country": { "type": "string", "maxLength": 50 },
+        "berthsCount": { "type": "number" },
+        "maxDraft": { "type": "number" },
+        "status": { "type": "string", "enum": ["open", "congested", "maintenance"] },
+        "updatedAt": { "type": "string" },
+        "createdBy": { "type": "string" }
+      },
+      "required": ["code", "name", "city", "status"]
+    },
+    "Crew": {
+      "title": "Crew",
+      "description": "Master data nahkoda dan kru pelaut",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "maxLength": 100 },
+        "rank": { "type": "string", "maxLength": 50 },
+        "seamanBookNumber": { "type": "string", "maxLength": 50 },
+        "licenseNumber": { "type": "string", "maxLength": 50 },
+        "assignedVesselId": { "type": "string", "maxLength": 100 },
+        "assignedVesselName": { "type": "string", "maxLength": 100 },
+        "phone": { "type": "string", "maxLength": 30 },
+        "status": { "type": "string", "enum": ["on_duty", "on_leave", "standby"] },
+        "updatedAt": { "type": "string" },
+        "createdBy": { "type": "string" }
+      },
+      "required": ["name", "rank", "seamanBookNumber", "status"]
+    },
+    "Voyage": {
+      "title": "Voyage",
+      "description": "Transaksi jadwal keberangkatan dan pelayaran kapal",
+      "type": "object",
+      "properties": {
+        "voyageNumber": { "type": "string", "maxLength": 50 },
+        "vesselId": { "type": "string", "maxLength": 100 },
+        "vesselName": { "type": "string", "maxLength": 100 },
+        "originPortId": { "type": "string", "maxLength": 100 },
+        "originPortName": { "type": "string", "maxLength": 100 },
+        "destinationPortId": { "type": "string", "maxLength": 100 },
+        "destinationPortName": { "type": "string", "maxLength": 100 },
+        "etd": { "type": "string" },
+        "eta": { "type": "string" },
+        "status": { "type": "string", "enum": ["scheduled", "in_transit", "berthed", "completed", "delayed"] },
+        "cargoLoadPercent": { "type": "number" },
+        "fuelConsumptionLiters": { "type": "number" },
+        "currentCoordinates": { "type": "string", "maxLength": 120 },
+        "captainName": { "type": "string", "maxLength": 100 },
+        "updatedAt": { "type": "string" },
+        "createdBy": { "type": "string" }
+      },
+      "required": ["voyageNumber", "vesselId", "originPortId", "destinationPortId", "status"]
+    },
+    "Booking": {
+      "title": "Booking",
+      "description": "Transaksi manifest kargo kontainer dan bill of lading",
+      "type": "object",
+      "properties": {
+        "blNumber": { "type": "string", "maxLength": 50 },
+        "voyageId": { "type": "string", "maxLength": 100 },
+        "voyageNumber": { "type": "string", "maxLength": 50 },
+        "shipperName": { "type": "string", "maxLength": 100 },
+        "consigneeName": { "type": "string", "maxLength": 100 },
+        "cargoType": { "type": "string", "maxLength": 60 },
+        "containerCount": { "type": "number" },
+        "grossWeightTons": { "type": "number" },
+        "freightPriceIdr": { "type": "number" },
+        "paymentStatus": { "type": "string", "enum": ["unpaid", "paid", "credit"] },
+        "bookingStatus": { "type": "string", "enum": ["draft", "confirmed", "loading", "on_board", "delivered", "cancelled"] },
+        "updatedAt": { "type": "string" },
+        "createdBy": { "type": "string" }
+      },
+      "required": ["blNumber", "voyageId", "shipperName", "consigneeName", "bookingStatus"]
+    },
+    "Clearance": {
+      "title": "Clearance",
+      "description": "Surat Perintah Berlayar (SPB) dan verifikasi kelaiklautan",
+      "type": "object",
+      "properties": {
+        "spbNumber": { "type": "string", "maxLength": 50 },
+        "voyageId": { "type": "string", "maxLength": 100 },
+        "voyageNumber": { "type": "string", "maxLength": 50 },
+        "vesselName": { "type": "string", "maxLength": 100 },
+        "ksopAuthority": { "type": "string", "maxLength": 100 },
+        "issueDate": { "type": "string" },
+        "seaworthinessStatus": { "type": "string", "enum": ["laik_laut", "dalam_inspeksi", "ditahan"] },
+        "inspectorNotes": { "type": "string", "maxLength": 255 },
+        "updatedAt": { "type": "string" },
+        "createdBy": { "type": "string" }
+      },
+      "required": ["spbNumber", "voyageId", "ksopAuthority", "seaworthinessStatus"]
+    },
+    "AuditLog": {
+      "title": "AuditLog",
+      "description": "Catatan aktivitas sinkronisasi online antar pengguna",
+      "type": "object",
+      "properties": {
+        "action": { "type": "string", "enum": ["CREATE", "UPDATE", "DELETE"] },
+        "module": { "type": "string", "maxLength": 50 },
+        "targetTitle": { "type": "string", "maxLength": 150 },
+        "userEmail": { "type": "string", "maxLength": 100 },
+        "timestamp": { "type": "string" }
+      },
+      "required": ["action", "module", "targetTitle", "userEmail", "timestamp"]
+    }
+  },
+  "firestore": {
+    "/vessels/{vesselId}": {
+      "schema": "Vessel",
+      "description": "Collection dokumen kapal armada"
+    },
+    "/ports/{portId}": {
+      "schema": "Port",
+      "description": "Collection pelabuhan dan dermaga"
+    },
+    "/crew/{crewId}": {
+      "schema": "Crew",
+      "description": "Collection personil kru dan nahkoda"
+    },
+    "/voyages/{voyageId}": {
+      "schema": "Voyage",
+      "description": "Collection jadwal dan transaksi berlayar"
+    },
+    "/bookings/{bookingId}": {
+      "schema": "Booking",
+      "description": "Collection order booking muatan dan B/L"
+    },
+    "/clearances/{clearanceId}": {
+      "schema": "Clearance",
+      "description": "Collection Surat Perintah Berlayar KSOP"
+    },
+    "/audit_logs/{logId}": {
+      "schema": "AuditLog",
+      "description": "Collection real-time audit log aktivitas"
+    }
+  }
+}

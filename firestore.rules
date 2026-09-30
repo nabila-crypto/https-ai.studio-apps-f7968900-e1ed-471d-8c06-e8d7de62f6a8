@@ -1,0 +1,98 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Connection test document
+    match /test/{docId} {
+      allow get: if true;
+    }
+
+    // Master Data Kapal (Vessels)
+    match /vessels/{vesselId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidId(vesselId) &&
+        incoming().name is string && incoming().name.size() > 0 && incoming().name.size() <= 100 &&
+        incoming().imoNumber is string && incoming().imoNumber.size() <= 30;
+      allow update: if isSignedIn() && isValidId(vesselId) &&
+        incoming().name is string && incoming().name.size() > 0 && incoming().name.size() <= 100;
+      allow delete: if isSignedIn() && isValidId(vesselId);
+    }
+
+    // Master Data Pelabuhan (Ports)
+    match /ports/{portId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidId(portId) &&
+        incoming().name is string && incoming().name.size() > 0 && incoming().name.size() <= 100 &&
+        incoming().code is string && incoming().code.size() <= 30;
+      allow update: if isSignedIn() && isValidId(portId) &&
+        incoming().name is string && incoming().name.size() > 0 && incoming().name.size() <= 100;
+      allow delete: if isSignedIn() && isValidId(portId);
+    }
+
+    // Master Data Kru & Nahkoda (Crew)
+    match /crew/{crewId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidId(crewId) &&
+        incoming().name is string && incoming().name.size() > 0 && incoming().name.size() <= 100;
+      allow update: if isSignedIn() && isValidId(crewId) &&
+        incoming().name is string && incoming().name.size() > 0 && incoming().name.size() <= 100;
+      allow delete: if isSignedIn() && isValidId(crewId);
+    }
+
+    // Transaksi Jadwal Berlayar (Voyages)
+    match /voyages/{voyageId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidId(voyageId) &&
+        incoming().voyageNumber is string && incoming().voyageNumber.size() > 0 && incoming().voyageNumber.size() <= 50;
+      allow update: if isSignedIn() && isValidId(voyageId) &&
+        incoming().voyageNumber is string && incoming().voyageNumber.size() > 0 && incoming().voyageNumber.size() <= 50;
+      allow delete: if isSignedIn() && isValidId(voyageId);
+    }
+
+    // Transaksi Kargo & Bill of Lading (Bookings)
+    match /bookings/{bookingId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidId(bookingId) &&
+        incoming().blNumber is string && incoming().blNumber.size() > 0 && incoming().blNumber.size() <= 50;
+      allow update: if isSignedIn() && isValidId(bookingId) &&
+        incoming().blNumber is string && incoming().blNumber.size() > 0 && incoming().blNumber.size() <= 50;
+      allow delete: if isSignedIn() && isValidId(bookingId);
+    }
+
+    // Surat Perintah Berlayar (Clearances)
+    match /clearances/{clearanceId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidId(clearanceId) &&
+        incoming().spbNumber is string && incoming().spbNumber.size() > 0 && incoming().spbNumber.size() <= 50;
+      allow update: if isSignedIn() && isValidId(clearanceId) &&
+        incoming().spbNumber is string && incoming().spbNumber.size() > 0 && incoming().spbNumber.size() <= 50;
+      allow delete: if isSignedIn() && isValidId(clearanceId);
+    }
+
+    // Live Activity Log
+    match /audit_logs/{logId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidId(logId) &&
+        incoming().action is string && incoming().action.size() <= 30;
+      allow update: if false;
+      allow delete: if isSignedIn() && isValidId(logId);
+    }
+  }
+}

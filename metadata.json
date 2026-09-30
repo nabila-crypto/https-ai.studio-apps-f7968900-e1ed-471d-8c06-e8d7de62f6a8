@@ -1,0 +1,6 @@
+{
+  "name": "MaritimX - Sistem Manajemen Perusahaan Pelayaran",
+  "description": "Sistem Informasi Manajemen Terpadu Perusahaan Pelayaran Nusantara dengan Real Database Sync, Master Data Armada & Pelabuhan, Transaksi Voyage & Kargo, Laporan, dan Akses Multi-User Online Realtime.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
